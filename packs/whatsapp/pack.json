@@ -2,12 +2,12 @@
   "id": "whatsapp",
   "name": "Pack WhatsApp Negócios",
   "version": "1.0.0",
-  "requires": ["base>=1.0.0"],
+  "requires": [],
   "install": {
     "copy_to": {
-      "workflows": "~/.openclawd/workflows/simplifia/whatsapp",
-      "rules": "~/.openclawd/rules/simplifia/whatsapp",
-      "assets": "~/.openclawd/assets/simplifia/whatsapp"
+      "workflows": "~/.simplifia/workflows/whatsapp",
+      "rules": "~/.simplifia/rules/whatsapp",
+      "assets": "~/.simplifia/assets/whatsapp"
     },
     "db": {
       "type": "sqlite",
