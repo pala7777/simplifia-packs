@@ -7,25 +7,21 @@
       "guidelines": [
         "Máximo 2 parágrafos",
         "Sem emojis ou apenas 1",
-        "Vai direto ao ponto",
-        "Linguagem simples"
+        "Vai direto ao ponto"
       ],
       "example": "Oi! O corte custa R$50. Quer agendar?",
-      "emoji_usage": "minimal",
-      "formality": "informal"
+      "emoji_usage": "minimal"
     },
-    "educado": {
-      "name": "Educado e Cordial",
+    "neutro": {
+      "name": "Neutro/Educado",
       "description": "Tom amigável e profissional",
       "guidelines": [
         "Saudação personalizada",
-        "Agradece o contato",
         "Usa emojis com moderação",
         "Oferece ajuda adicional"
       ],
-      "example": "Olá! Obrigado por entrar em contato 😊 O corte masculino custa R$50. Posso ajudar com mais alguma coisa?",
-      "emoji_usage": "moderate",
-      "formality": "semi-formal"
+      "example": "Olá! 😊 O corte custa R$50. Posso ajudar com mais alguma coisa?",
+      "emoji_usage": "moderate"
     },
     "firme": {
       "name": "Firme e Profissional",
@@ -33,60 +29,20 @@
       "guidelines": [
         "Linguagem clara e assertiva",
         "Sem emojis",
-        "Inclui informações completas",
         "Tom de autoridade respeitosa"
       ],
-      "example": "Bom dia. Nosso serviço de corte masculino tem o valor de R$50,00. O pagamento pode ser feito via PIX ou cartão. Para agendamentos, favor informar data e horário de preferência.",
-      "emoji_usage": "none",
-      "formality": "formal"
-    },
-    "empatico": {
-      "name": "Empático",
-      "description": "Para reclamações e situações delicadas",
-      "guidelines": [
-        "Reconhece o sentimento do cliente",
-        "Pede desculpas quando apropriado",
-        "Foca na solução",
-        "Demonstra preocupação genuína"
-      ],
-      "example": "Puxa, sinto muito que isso tenha acontecido 😔 Entendo sua frustração e quero resolver isso da melhor forma. Pode me contar mais detalhes para eu ajudar?",
-      "emoji_usage": "empathetic",
-      "formality": "informal"
-    },
-    "vendedor": {
-      "name": "Vendedor Amigável",
-      "description": "Para upsell e promoções",
-      "guidelines": [
-        "Destaca benefícios",
-        "Cria senso de oportunidade",
-        "Usa gatilhos de escassez com moderação",
-        "Sempre fecha com CTA"
-      ],
-      "example": "Boa escolha! 🔥 E olha só: quem faz corte + barba ganha 20% de desconto no combo. Aproveita que é só essa semana! Quer incluir?",
-      "emoji_usage": "enthusiastic",
-      "formality": "informal"
+      "example": "Bom dia. O serviço de corte tem o valor de R$50,00. Aguardo retorno para agendamento.",
+      "emoji_usage": "none"
     }
   },
   "defaults": {
     "intent_to_tone": {
-      "orcamento": "educado",
-      "agendamento": "educado",
-      "duvida": "educado",
-      "reclamacao": "empatico",
-      "elogio": "curto",
-      "cancelamento": "educado"
+      "orcamento": "neutro",
+      "agendamento": "neutro",
+      "duvida": "neutro",
+      "reclamacao": "neutro",
+      "elogio": "curto"
     },
-    "time_of_day": {
-      "morning": "Bom dia",
-      "afternoon": "Boa tarde",
-      "evening": "Boa noite"
-    },
-    "fallback_tone": "educado"
-  },
-  "customization": {
-    "business_name_placeholder": "{{business_name}}",
-    "owner_name_placeholder": "{{owner_name}}",
-    "signature_enabled": false,
-    "signature_template": "\n\n— {{owner_name}}, {{business_name}}"
+    "fallback_tone": "neutro"
   }
 }

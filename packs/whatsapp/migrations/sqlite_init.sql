@@ -1,24 +1,12 @@
--- SIMPLIFIA Pack WhatsApp - SQLite Schema
+-- SIMPLIFIA Pack WhatsApp - SQLite Schema (MVP)
 -- Version: 1.0.0
+-- Tabelas: interactions, followups (simplificado)
 
--- Customers table
-CREATE TABLE IF NOT EXISTS customers (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    phone TEXT UNIQUE NOT NULL,
-    name TEXT,
-    first_contact_at TEXT NOT NULL DEFAULT (datetime('now')),
-    last_contact_at TEXT NOT NULL DEFAULT (datetime('now')),
-    status TEXT DEFAULT 'lead', -- lead, active, inactive, blocked
-    tags TEXT, -- JSON array
-    notes TEXT,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    updated_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- Interactions table (logs)
+-- Interactions table (logs de todas as interações)
 CREATE TABLE IF NOT EXISTS interactions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER REFERENCES customers(id),
+    phone TEXT,
+    name TEXT,
     pack_id TEXT NOT NULL DEFAULT 'whatsapp',
     workflow_id TEXT,
     direction TEXT NOT NULL, -- inbound, outbound
@@ -28,15 +16,16 @@ CREATE TABLE IF NOT EXISTS interactions (
     status TEXT DEFAULT 'pending', -- pending, processed, sent, failed
     draft_response TEXT,
     final_response TEXT,
-    metadata TEXT, -- JSON
+    metadata TEXT, -- JSON para dados extras
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Follow-ups table
+-- Follow-ups table (lembretes e sequências)
 CREATE TABLE IF NOT EXISTS followups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER REFERENCES customers(id),
-    type TEXT NOT NULL, -- pos_venda_d1, pos_venda_d7, pos_venda_d30, reminder
+    phone TEXT,
+    name TEXT,
+    type TEXT NOT NULL, -- pos_venda_d1, pos_venda_d7, pos_venda_d30, lembrete, reengajamento
     scheduled_for TEXT NOT NULL,
     status TEXT DEFAULT 'pending', -- pending, sent, cancelled
     message_template TEXT,
@@ -44,39 +33,9 @@ CREATE TABLE IF NOT EXISTS followups (
     created_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
--- Cases table (for complaints/issues)
-CREATE TABLE IF NOT EXISTS cases (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER REFERENCES customers(id),
-    interaction_id INTEGER REFERENCES interactions(id),
-    type TEXT NOT NULL, -- reclamacao, devolucao, suporte
-    priority TEXT DEFAULT 'normal', -- low, normal, high, urgent
-    status TEXT DEFAULT 'open', -- open, in_progress, resolved, closed
-    description TEXT,
-    resolution TEXT,
-    created_at TEXT NOT NULL DEFAULT (datetime('now')),
-    resolved_at TEXT
-);
-
--- Schedules table (appointments)
-CREATE TABLE IF NOT EXISTS schedules (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    customer_id INTEGER REFERENCES customers(id),
-    service TEXT,
-    scheduled_at TEXT NOT NULL,
-    duration_minutes INTEGER DEFAULT 60,
-    status TEXT DEFAULT 'confirmed', -- pending, confirmed, cancelled, done
-    reminder_sent INTEGER DEFAULT 0,
-    notes TEXT,
-    ics_file TEXT, -- path to generated .ics
-    created_at TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- Indexes
-CREATE INDEX IF NOT EXISTS idx_interactions_customer ON interactions(customer_id);
+-- Indexes para performance
 CREATE INDEX IF NOT EXISTS idx_interactions_created ON interactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_interactions_phone ON interactions(phone);
 CREATE INDEX IF NOT EXISTS idx_interactions_intent ON interactions(intent);
 CREATE INDEX IF NOT EXISTS idx_followups_scheduled ON followups(scheduled_for);
 CREATE INDEX IF NOT EXISTS idx_followups_status ON followups(status);
-CREATE INDEX IF NOT EXISTS idx_cases_status ON cases(status);
-CREATE INDEX IF NOT EXISTS idx_schedules_date ON schedules(scheduled_at);
