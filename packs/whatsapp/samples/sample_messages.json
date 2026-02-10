@@ -1,0 +1,124 @@
+[
+  {
+    "id": 1,
+    "message": "Oi, quanto custa o corte de cabelo?",
+    "expected_intent": "orcamento",
+    "expected_data": {
+      "servico": "corte de cabelo"
+    }
+  },
+  {
+    "id": 2,
+    "message": "Quero marcar um horário para amanhã de manhã",
+    "expected_intent": "agendamento",
+    "expected_data": {
+      "data_preferida": "amanhã",
+      "periodo": "manhã"
+    }
+  },
+  {
+    "id": 3,
+    "message": "Vocês fazem barba também?",
+    "expected_intent": "duvida",
+    "expected_data": {
+      "servico": "barba"
+    }
+  },
+  {
+    "id": 4,
+    "message": "O serviço ficou ótimo, muito obrigado pelo atendimento!",
+    "expected_intent": "elogio",
+    "expected_data": {}
+  },
+  {
+    "id": 5,
+    "message": "Não gostei do corte, ficou muito curto. Quero reclamar.",
+    "expected_intent": "reclamacao",
+    "expected_data": {
+      "motivo": "corte curto"
+    }
+  },
+  {
+    "id": 6,
+    "message": "Bom dia! Qual o valor da escova progressiva?",
+    "expected_intent": "orcamento",
+    "expected_data": {
+      "servico": "escova progressiva"
+    }
+  },
+  {
+    "id": 7,
+    "message": "Preciso cancelar meu horário de sábado",
+    "expected_intent": "cancelamento",
+    "expected_data": {
+      "data_referencia": "sábado"
+    }
+  },
+  {
+    "id": 8,
+    "message": "Tem vaga pra hoje ainda? É urgente",
+    "expected_intent": "agendamento",
+    "expected_data": {
+      "urgencia": "alta",
+      "data_preferida": "hoje"
+    }
+  },
+  {
+    "id": 9,
+    "message": "Qual o endereço de vocês?",
+    "expected_intent": "duvida",
+    "expected_data": {
+      "assunto": "localizacao"
+    }
+  },
+  {
+    "id": 10,
+    "message": "Adorei o tratamento! Vou indicar pra todas as minhas amigas",
+    "expected_intent": "elogio",
+    "expected_data": {}
+  },
+  {
+    "id": 11,
+    "message": "boa tarde gostaria de saber valores para unha em gel",
+    "expected_intent": "orcamento",
+    "expected_data": {
+      "servico": "unha em gel"
+    }
+  },
+  {
+    "id": 12,
+    "message": "Vocês aceitam pix?",
+    "expected_intent": "duvida",
+    "expected_data": {
+      "assunto": "pagamento"
+    }
+  },
+  {
+    "id": 13,
+    "message": "Quero remarcar meu horário de terça para quinta",
+    "expected_intent": "agendamento",
+    "expected_data": {
+      "acao": "remarcar",
+      "data_original": "terça",
+      "data_nova": "quinta"
+    }
+  },
+  {
+    "id": 14,
+    "message": "Fui aí ontem e a moça que me atendeu foi super grossa",
+    "expected_intent": "reclamacao",
+    "expected_data": {
+      "motivo": "atendimento",
+      "quando": "ontem"
+    }
+  },
+  {
+    "id": 15,
+    "message": "Oi tudo bem? To querendo fazer uma limpeza de pele, tem disponibilidade essa semana?",
+    "expected_intent": "agendamento",
+    "expected_data": {
+      "servico": "limpeza de pele",
+      "periodo": "essa semana"
+    }
+  }
+]

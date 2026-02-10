@@ -1,0 +1,36 @@
+{
+  "id": "base",
+  "name": "SIMPLIFIA Base",
+  "version": "1.0.0",
+  "requires": [],
+  "install": {
+    "copy_to": {
+      "workflows": "~/.openclawd/workflows/simplifia/base",
+      "rules": "~/.openclawd/rules/simplifia/base",
+      "assets": "~/.openclawd/assets/simplifia/base"
+    },
+    "db": {
+      "type": "sqlite",
+      "path": "~/.simplifia/state.db",
+      "migrations": ["migrations/sqlite_init.sql"]
+    }
+  },
+  "features": {
+    "logs": true,
+    "cockpit": false
+  },
+  "workflows": [
+    {
+      "id": "wf_base_message_router",
+      "title": "Roteador de Mensagens",
+      "description": "Recebe mensagens e direciona para o workflow correto",
+      "entrypoints": ["message_in"]
+    },
+    {
+      "id": "wf_base_quick_reply",
+      "title": "Quick Reply",
+      "description": "Busca e sugere respostas rápidas",
+      "entrypoints": ["intent_detected"]
+    }
+  ]
+}

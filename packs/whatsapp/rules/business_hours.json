@@ -1,0 +1,113 @@
+{
+  "version": "1.0.0",
+  "timezone": "America/Sao_Paulo",
+  "schedule": {
+    "monday": {
+      "open": true,
+      "start": "09:00",
+      "end": "18:00",
+      "lunch_break": {
+        "start": "12:00",
+        "end": "13:00"
+      }
+    },
+    "tuesday": {
+      "open": true,
+      "start": "09:00",
+      "end": "18:00",
+      "lunch_break": {
+        "start": "12:00",
+        "end": "13:00"
+      }
+    },
+    "wednesday": {
+      "open": true,
+      "start": "09:00",
+      "end": "18:00",
+      "lunch_break": {
+        "start": "12:00",
+        "end": "13:00"
+      }
+    },
+    "thursday": {
+      "open": true,
+      "start": "09:00",
+      "end": "18:00",
+      "lunch_break": {
+        "start": "12:00",
+        "end": "13:00"
+      }
+    },
+    "friday": {
+      "open": true,
+      "start": "09:00",
+      "end": "18:00",
+      "lunch_break": {
+        "start": "12:00",
+        "end": "13:00"
+      }
+    },
+    "saturday": {
+      "open": true,
+      "start": "09:00",
+      "end": "13:00",
+      "lunch_break": null
+    },
+    "sunday": {
+      "open": false
+    }
+  },
+  "holidays": [
+    {
+      "date": "2026-01-01",
+      "name": "Ano Novo",
+      "open": false
+    },
+    {
+      "date": "2026-04-21",
+      "name": "Tiradentes",
+      "open": false
+    },
+    {
+      "date": "2026-05-01",
+      "name": "Dia do Trabalho",
+      "open": false
+    },
+    {
+      "date": "2026-09-07",
+      "name": "Independência",
+      "open": false
+    },
+    {
+      "date": "2026-10-12",
+      "name": "Nossa Senhora Aparecida",
+      "open": false
+    },
+    {
+      "date": "2026-11-02",
+      "name": "Finados",
+      "open": false
+    },
+    {
+      "date": "2026-11-15",
+      "name": "Proclamação da República",
+      "open": false
+    },
+    {
+      "date": "2026-12-25",
+      "name": "Natal",
+      "open": false
+    }
+  ],
+  "slot_config": {
+    "default_duration_minutes": 60,
+    "buffer_between_slots_minutes": 15,
+    "max_bookings_per_slot": 1,
+    "advance_booking_days": 30,
+    "min_advance_hours": 2
+  },
+  "messages": {
+    "outside_hours": "Oi! Nosso horário de atendimento é de segunda a sexta, das 9h às 18h, e sábado das 9h às 13h. Deixe sua mensagem que respondo assim que possível! 😊",
+    "holiday": "Oi! Hoje estamos fechados por conta do feriado. Voltamos amanhã no horário normal. Deixe sua mensagem! 🙌"
+  }
+}

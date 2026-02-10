@@ -1,0 +1,131 @@
+# SIMPLIFIA Workflow: Inbox Autopilot (Triagem + Draft)
+# Pack: WhatsApp Negócios
+# Version: 1.0.0
+
+id: wf_001_inbox_triage
+name: "Inbox Autopilot"
+description: "Classifica mensagens, extrai dados e gera resposta em rascunho"
+version: "1.0.0"
+
+trigger:
+  type: message_in
+  channels: [whatsapp]
+
+steps:
+  - id: extract_customer
+    type: extract
+    description: "Extrai ou cria registro do cliente"
+    config:
+      fields:
+        - phone: "{{message.from}}"
+        - name: "{{message.sender_name}}"
+      upsert: true
+      table: customers
+
+  - id: classify_intent
+    type: ai_classify
+    description: "Classifica a intenção da mensagem"
+    config:
+      model: default
+      categories:
+        - id: orcamento
+          description: "Pedido de preço, valor, orçamento"
+          keywords: [preço, valor, quanto, orçamento, custa, tabela]
+        - id: agendamento
+          description: "Quer marcar horário, agendar"
+          keywords: [agendar, marcar, horário, agenda, disponível, vaga]
+        - id: duvida
+          description: "Pergunta geral, informação"
+          keywords: [como, onde, qual, pode, tem, faz, funciona]
+        - id: reclamacao
+          description: "Problema, insatisfação"
+          keywords: [problema, reclamação, não gostei, defeito, errado, péssimo]
+        - id: elogio
+          description: "Feedback positivo"
+          keywords: [obrigado, excelente, adorei, perfeito, ótimo, maravilhoso]
+      output: intent
+
+  - id: extract_data
+    type: ai_extract
+    description: "Extrai dados estruturados da mensagem"
+    config:
+      model: default
+      fields:
+        - name: nome_cliente
+          type: string
+          description: "Nome do cliente se mencionado"
+        - name: servico
+          type: string
+          description: "Serviço solicitado"
+        - name: urgencia
+          type: enum
+          values: [baixa, media, alta]
+          description: "Urgência baseada no tom"
+        - name: data_preferida
+          type: date
+          description: "Data mencionada se houver"
+        - name: localizacao
+          type: string
+          description: "Bairro ou cidade se mencionado"
+      output: extracted_data
+
+  - id: select_tone
+    type: lookup
+    description: "Seleciona tom de resposta baseado nas regras"
+    config:
+      file: "rules/tone_profiles.json"
+      key: "{{config.default_tone}}"
+      fallback: "educado"
+      output: tone
+
+  - id: generate_draft
+    type: ai_generate
+    description: "Gera rascunho de resposta"
+    config:
+      model: default
+      prompt_template: |
+        Contexto:
+        - Negócio: {{config.business_name}}
+        - Intenção: {{intent}}
+        - Tom: {{tone}}
+        - Dados extraídos: {{extracted_data}}
+        
+        Mensagem recebida:
+        {{message.text}}
+        
+        Gere uma resposta {{tone}} para esta mensagem.
+        Seja breve (máximo 3 parágrafos).
+        Inclua próximo passo claro.
+      output: draft_response
+
+  - id: save_interaction
+    type: db_insert
+    description: "Salva interação no banco"
+    config:
+      table: interactions
+      data:
+        customer_id: "{{customer.id}}"
+        pack_id: "whatsapp"
+        workflow_id: "wf_001_inbox_triage"
+        direction: "inbound"
+        message_preview: "{{message.text | truncate(100)}}"
+        intent: "{{intent}}"
+        intent_confidence: "{{intent_confidence}}"
+        status: "pending"
+        draft_response: "{{draft_response}}"
+
+  - id: notify_user
+    type: notification
+    description: "Notifica usuário sobre novo draft"
+    config:
+      title: "📬 Nova mensagem ({{intent}})"
+      body: "{{message.text | truncate(50)}}..."
+      action: "review_draft"
+      data:
+        interaction_id: "{{interaction.id}}"
+
+output:
+  interaction_id: "{{interaction.id}}"
+  intent: "{{intent}}"
+  draft: "{{draft_response}}"
+  status: "draft_ready"

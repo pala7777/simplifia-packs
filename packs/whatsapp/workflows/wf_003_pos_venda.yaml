@@ -1,0 +1,195 @@
+# SIMPLIFIA Workflow: Pós-venda + Reviews
+# Pack: WhatsApp Negócios
+# Version: 1.0.0
+
+id: wf_003_pos_venda
+name: "Pós-venda + Reviews"
+description: "Sequência D+1/D+7/D+30, pedido de avaliação, tratamento de reclamações"
+version: "1.0.0"
+
+trigger:
+  type: order_done
+  channels: [whatsapp]
+
+steps:
+  - id: schedule_sequence
+    type: schedule_tasks
+    description: "Agenda sequência de pós-venda"
+    config:
+      tasks:
+        # D+1: Agradecer + verificar satisfação
+        - id: followup_d1
+          type: followup
+          customer_id: "{{customer.id}}"
+          scheduled_for: "{{trigger.completed_at | add_days(1)}}"
+          template_key: "pos_venda_d1"
+          
+        # D+7: Pedir avaliação
+        - id: followup_d7
+          type: followup
+          customer_id: "{{customer.id}}"
+          scheduled_for: "{{trigger.completed_at | add_days(7)}}"
+          template_key: "pos_venda_d7"
+          
+        # D+30: Reengajamento
+        - id: followup_d30
+          type: followup
+          customer_id: "{{customer.id}}"
+          scheduled_for: "{{trigger.completed_at | add_days(30)}}"
+          template_key: "pos_venda_d30"
+
+  - id: save_followups
+    type: db_insert_batch
+    description: "Salva follow-ups no banco"
+    config:
+      table: followups
+      data: "{{scheduled_tasks}}"
+
+# Sub-workflow: Executar follow-up agendado
+sub_workflows:
+  execute_followup:
+    trigger:
+      type: scheduled
+      table: followups
+      condition: "scheduled_for <= datetime('now') AND status = 'pending'"
+    
+    steps:
+      - id: load_template
+        type: lookup
+        config:
+          file: "assets/sequences/followups.txt"
+          key: "{{followup.template_key}}"
+          output: template_text
+
+      - id: personalize_message
+        type: ai_generate
+        config:
+          model: default
+          prompt_template: |
+            Personalize esta mensagem de follow-up:
+            
+            Template: {{template_text}}
+            
+            Dados do cliente:
+            - Nome: {{customer.name}}
+            - Último serviço: {{customer.last_service}}
+            - Data do serviço: {{customer.last_service_date}}
+            
+            Tom: {{config.default_tone}}
+            
+            Mantenha breve e natural.
+          output: personalized_message
+
+      - id: queue_message
+        type: queue_outbound
+        config:
+          customer_id: "{{customer.id}}"
+          message: "{{personalized_message}}"
+          status: "draft"
+          requires_approval: true
+
+      - id: update_followup_status
+        type: db_update
+        config:
+          table: followups
+          where:
+            id: "{{followup.id}}"
+          data:
+            status: "sent"
+            sent_at: "{{now}}"
+
+  # Sub-workflow: Detectar e tratar reclamação
+  handle_complaint:
+    trigger:
+      type: intent_detected
+      intent: reclamacao
+    
+    steps:
+      - id: create_case
+        type: db_insert
+        config:
+          table: cases
+          data:
+            customer_id: "{{customer.id}}"
+            interaction_id: "{{interaction.id}}"
+            type: "reclamacao"
+            priority: "{{urgency | default('normal')}}"
+            status: "open"
+            description: "{{message.text}}"
+          output: case
+
+      - id: generate_response
+        type: ai_generate
+        config:
+          model: default
+          prompt_template: |
+            Um cliente fez uma reclamação:
+            "{{message.text}}"
+            
+            Gere uma resposta que:
+            1. Reconheça o problema
+            2. Peça desculpas sinceras
+            3. Pergunte mais detalhes se necessário
+            4. Assegure que vai resolver
+            
+            Tom: empático e profissional
+            Máximo: 3 parágrafos
+          output: complaint_response
+
+      - id: suggest_solutions
+        type: ai_generate
+        config:
+          model: default
+          prompt_template: |
+            Baseado nesta reclamação:
+            "{{message.text}}"
+            
+            Sugira 3 possíveis soluções para o negócio considerar:
+            1. Solução rápida (desconto, brinde)
+            2. Solução corretiva (refazer serviço)
+            3. Solução premium (upgrade, compensação extra)
+            
+            Formato: lista simples
+          output: suggested_solutions
+
+      - id: notify_owner
+        type: notification
+        config:
+          title: "⚠️ Nova reclamação"
+          body: "{{customer.name}}: {{message.text | truncate(50)}}"
+          priority: "high"
+          action: "view_case"
+          data:
+            case_id: "{{case.id}}"
+            suggestions: "{{suggested_solutions}}"
+
+templates:
+  pos_venda_d1: |
+    Oi {{customer.name}}! 😊
+    
+    Passando pra saber se ficou tudo certo com [serviço].
+    Qualquer coisa, é só me chamar!
+    
+  pos_venda_d7: |
+    Oi {{customer.name}}! Tudo bem?
+    
+    Já faz uma semana desde [serviço]. 
+    Se puder, adoraria saber sua opinião! 
+    
+    Pode deixar uma avaliação aqui: [link]
+    
+    Sua opinião ajuda muito! 🙏
+    
+  pos_venda_d30: |
+    Oi {{customer.name}}! 👋
+    
+    Faz um tempinho que não nos vemos!
+    
+    Temos novidades que você pode gostar: [novidade]
+    
+    Quer agendar? Tenho horários especiais pra clientes VIP como você 😉
+
+output:
+  followups_scheduled: "{{scheduled_tasks | length}}"
+  next_followup: "{{scheduled_tasks[0].scheduled_for}}"
+  status: "sequence_started"

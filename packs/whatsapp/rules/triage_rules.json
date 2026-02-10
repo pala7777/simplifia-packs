@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "rules": {
+    "intent_keywords": {
+      "orcamento": {
+        "keywords": ["preço", "valor", "quanto", "orçamento", "custa", "tabela", "promoção", "desconto"],
+        "priority": "high",
+        "auto_response": false
+      },
+      "agendamento": {
+        "keywords": ["agendar", "marcar", "horário", "agenda", "disponível", "vaga", "reservar", "encaixe"],
+        "priority": "high",
+        "auto_response": false
+      },
+      "duvida": {
+        "keywords": ["como", "onde", "qual", "pode", "tem", "faz", "funciona", "aceita", "demora"],
+        "priority": "normal",
+        "auto_response": true
+      },
+      "reclamacao": {
+        "keywords": ["problema", "reclamação", "não gostei", "defeito", "errado", "péssimo", "horrível", "decepcionado"],
+        "priority": "urgent",
+        "auto_response": false,
+        "notify_owner": true
+      },
+      "elogio": {
+        "keywords": ["obrigado", "excelente", "adorei", "perfeito", "ótimo", "maravilhoso", "amei", "incrível"],
+        "priority": "low",
+        "auto_response": true
+      },
+      "cancelamento": {
+        "keywords": ["cancelar", "desmarcar", "não vou", "remarcar", "adiar"],
+        "priority": "high",
+        "auto_response": false
+      }
+    },
+    "urgency_indicators": {
+      "high": ["urgente", "agora", "hoje", "emergência", "preciso já"],
+      "medium": ["amanhã", "essa semana", "logo"],
+      "low": ["quando puder", "sem pressa", "qualquer dia"]
+    },
+    "sentiment_overrides": {
+      "negative_sentiment_threshold": 0.3,
+      "escalate_to_human": true
+    }
+  },
+  "config": {
+    "default_intent": "duvida",
+    "confidence_threshold": 0.7,
+    "require_human_review_below": 0.5
+  }
+}

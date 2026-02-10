@@ -1,0 +1,143 @@
+# SIMPLIFIA Workflow: Agendamento One-Click
+# Pack: WhatsApp Negócios
+# Version: 1.0.0
+
+id: wf_002_agendamento
+name: "Agendamento One-Click"
+description: "Sugere horários, confirma e cria lembretes"
+version: "1.0.0"
+
+trigger:
+  type: intent_schedule
+  channels: [whatsapp]
+  conditions:
+    - intent: agendamento
+
+steps:
+  - id: load_business_hours
+    type: lookup
+    description: "Carrega horários de funcionamento"
+    config:
+      file: "rules/business_hours.json"
+      output: business_hours
+
+  - id: get_available_slots
+    type: compute
+    description: "Calcula horários disponíveis"
+    config:
+      logic: |
+        # Busca próximos 7 dias
+        # Exclui horários já agendados
+        # Respeita regras de intervalo
+      inputs:
+        business_hours: "{{business_hours}}"
+        existing_schedules: "SELECT * FROM schedules WHERE scheduled_at > datetime('now') AND status != 'cancelled'"
+        buffer_minutes: 15
+        slots_to_suggest: 3
+      output: available_slots
+
+  - id: format_suggestions
+    type: ai_generate
+    description: "Formata sugestões de horário"
+    config:
+      model: default
+      prompt_template: |
+        Formate estas opções de horário de forma amigável:
+        {{available_slots}}
+        
+        Exemplo de formato:
+        "Tenho estes horários disponíveis:
+        1️⃣ Terça, 10h
+        2️⃣ Quarta, 14h
+        3️⃣ Quinta, 9h
+        
+        Qual prefere?"
+      output: formatted_slots
+
+  - id: wait_for_selection
+    type: wait_response
+    description: "Aguarda escolha do cliente"
+    config:
+      timeout_hours: 24
+      reminder_after_hours: 4
+      reminder_message: "Oi! Ainda está interessado em agendar? Os horários acima estão disponíveis 😊"
+      output: selection_response
+
+  - id: parse_selection
+    type: ai_extract
+    description: "Identifica horário escolhido"
+    config:
+      model: default
+      fields:
+        - name: selected_slot
+          type: datetime
+          description: "Horário selecionado pelo cliente"
+        - name: service
+          type: string
+          description: "Serviço desejado se especificado"
+      context:
+        available_slots: "{{available_slots}}"
+      output: selection
+
+  - id: create_schedule
+    type: db_insert
+    description: "Cria agendamento no banco"
+    config:
+      table: schedules
+      data:
+        customer_id: "{{customer.id}}"
+        service: "{{selection.service}}"
+        scheduled_at: "{{selection.selected_slot}}"
+        duration_minutes: "{{config.default_duration | default(60)}}"
+        status: "confirmed"
+
+  - id: generate_ics
+    type: generate_file
+    description: "Gera arquivo .ics para calendário"
+    config:
+      type: ics
+      data:
+        title: "{{config.business_name}} - {{selection.service}}"
+        start: "{{selection.selected_slot}}"
+        duration: "{{config.default_duration | default(60)}}"
+        location: "{{config.business_address}}"
+        description: "Agendamento via WhatsApp"
+      output_path: "~/.simplifia/calendars/{{schedule.id}}.ics"
+      output: ics_path
+
+  - id: schedule_reminders
+    type: schedule_tasks
+    description: "Agenda lembretes"
+    config:
+      tasks:
+        - type: followup
+          scheduled_for: "{{selection.selected_slot | add_hours(-24)}}"
+          template: "Lembrete: amanhã você tem horário às {{selection.selected_slot | format_time}}. Confirma? 😊"
+        - type: followup
+          scheduled_for: "{{selection.selected_slot | add_hours(-2)}}"
+          template: "Oi! Só passando pra lembrar: daqui 2 horas é seu horário. Até já! 🙌"
+
+  - id: send_confirmation
+    type: ai_generate
+    description: "Gera mensagem de confirmação"
+    config:
+      model: default
+      prompt_template: |
+        Gere uma mensagem de confirmação de agendamento:
+        - Horário: {{selection.selected_slot | format_datetime}}
+        - Serviço: {{selection.service}}
+        - Negócio: {{config.business_name}}
+        
+        Inclua:
+        - Confirmação clara
+        - Endereço se houver
+        - Dica de preparação se relevante
+        - Tom {{tone}}
+      output: confirmation_message
+
+output:
+  schedule_id: "{{schedule.id}}"
+  scheduled_at: "{{selection.selected_slot}}"
+  ics_file: "{{ics_path}}"
+  confirmation: "{{confirmation_message}}"
+  status: "confirmed"

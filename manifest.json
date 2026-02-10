@@ -1,0 +1,53 @@
+{
+  "generated_at": "2026-02-10T00:00:00Z",
+  "packs": [
+    {
+      "id": "base",
+      "name": "SIMPLIFIA Base",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Placeholder - será preenchido no primeiro release"
+    },
+    {
+      "id": "whatsapp",
+      "name": "Pack WhatsApp Negócios",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Primeira versão do Pack WhatsApp (3 workflows + rules + assets + sqlite)."
+    },
+    {
+      "id": "freelancers",
+      "name": "Pack Freelancers",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Em breve"
+    },
+    {
+      "id": "criadores",
+      "name": "Pack Criadores",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Em breve"
+    },
+    {
+      "id": "ecommerce",
+      "name": "Pack E-commerce",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Em breve"
+    },
+    {
+      "id": "imobiliario",
+      "name": "Pack Imobiliário",
+      "latest_version": "1.0.0",
+      "zip_url": "",
+      "sha256": "",
+      "release_notes": "Em breve"
+    }
+  ]
+}

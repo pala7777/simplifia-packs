@@ -1,0 +1,54 @@
+# SIMPLIFIA - Quick Replies (Respostas Rápidas)
+# Pack: WhatsApp Negócios
+# Formato: [categoria] | [tag] | [texto]
+
+# === SAUDAÇÕES ===
+saudacao | oi | Olá! Como posso ajudar? 😊
+saudacao | bom_dia | Bom dia! Em que posso ajudar hoje?
+saudacao | boa_tarde | Boa tarde! Como posso ser útil?
+saudacao | boa_noite | Boa noite! Ainda estou por aqui. Como posso ajudar?
+
+# === AGRADECIMENTOS ===
+agradecimento | obrigado | Eu que agradeço! 🙏 Precisando, é só chamar.
+agradecimento | volte_sempre | Obrigado pela preferência! Volte sempre 😊
+agradecimento | feedback | Muito obrigado pelo feedback! Isso nos ajuda muito a melhorar.
+
+# === ENCERRAMENTO ===
+encerramento | ate_logo | Até logo! Qualquer coisa, estou por aqui.
+encerramento | bom_dia | Tenha um ótimo dia! 🌟
+encerramento | disponivel | Fico à disposição! É só chamar quando precisar.
+
+# === AGUARDAR ===
+aguardar | um_momento | Só um momento, vou verificar aqui...
+aguardar | ja_volto | Estou verificando e já te retorno!
+aguardar | consultando | Deixa eu consultar aqui e já te falo.
+
+# === HORÁRIO ===
+horario | funcionamento | Nosso horário: Seg-Sex 9h-18h, Sáb 9h-13h.
+horario | fechado | No momento estamos fechados. Nosso horário é Seg-Sex 9h-18h, Sáb 9h-13h.
+horario | feriado | Hoje estamos fechados pelo feriado. Voltamos amanhã!
+
+# === PAGAMENTO ===
+pagamento | formas | Aceitamos: PIX, cartão de débito/crédito e dinheiro.
+pagamento | pix | Nosso PIX: [inserir chave]. Me avisa quando enviar! 👍
+pagamento | parcelamento | Parcelamos em até 3x sem juros no cartão.
+
+# === LOCALIZAÇÃO ===
+localizacao | endereco | Nosso endereço: [inserir endereço completo]
+localizacao | como_chegar | Fica fácil! [inserir referência]. Quer que eu mande a localização?
+localizacao | estacionamento | Temos estacionamento próprio / Tem estacionamento na rua (pago).
+
+# === CONFIRMAÇÃO ===
+confirmacao | agendamento | ✅ Confirmado! Te espero no dia [data] às [hora].
+confirmacao | recebido | Recebi! Vou verificar e já te retorno.
+confirmacao | entendido | Entendi! Vou providenciar.
+
+# === PROBLEMAS ===
+problema | desculpas | Peço desculpas pelo ocorrido. Vamos resolver isso.
+problema | verificando | Estou verificando o que aconteceu. Me dá um momento?
+problema | solucao | Vamos resolver isso da melhor forma. O que você acha de [sugestão]?
+
+# === PROMOÇÕES ===
+promo | combo | 🔥 Combo especial: [descrição] por apenas R$ [valor]!
+promo | desconto | Só hoje: [porcentagem]% de desconto em [serviço]!
+promo | indicacao | Indica um amigo e vocês dois ganham [benefício]!

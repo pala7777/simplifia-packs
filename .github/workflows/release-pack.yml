@@ -1,0 +1,116 @@
+name: Release Pack
+
+on:
+  push:
+    tags:
+      - 'pack-*-v*'  # e.g., pack-whatsapp-v1.0.0
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Parse tag
+        id: parse
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          # Extract pack name and version from tag (pack-whatsapp-v1.0.0)
+          PACK_ID=$(echo "$TAG" | sed 's/pack-\(.*\)-v.*/\1/')
+          VERSION=$(echo "$TAG" | sed 's/pack-.*-v//')
+          echo "pack_id=$PACK_ID" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+          echo "📦 Pack: $PACK_ID, Version: $VERSION"
+      
+      - name: Verify pack exists
+        run: |
+          PACK_DIR="packs/${{ steps.parse.outputs.pack_id }}"
+          if [ ! -d "$PACK_DIR" ]; then
+            echo "❌ Pack directory not found: $PACK_DIR"
+            exit 1
+          fi
+          if [ ! -f "$PACK_DIR/pack.json" ]; then
+            echo "❌ pack.json not found in $PACK_DIR"
+            exit 1
+          fi
+          echo "✅ Pack verified: $PACK_DIR"
+      
+      - name: Create ZIP
+        id: zip
+        run: |
+          PACK_ID="${{ steps.parse.outputs.pack_id }}"
+          VERSION="${{ steps.parse.outputs.version }}"
+          ZIP_NAME="${PACK_ID}-${VERSION}.zip"
+          
+          cd packs/$PACK_ID
+          zip -r "../../$ZIP_NAME" . -x "*.DS_Store" -x "__MACOSX/*"
+          cd ../..
+          
+          # Calculate SHA256
+          SHA256=$(sha256sum "$ZIP_NAME" | cut -d' ' -f1)
+          
+          echo "zip_name=$ZIP_NAME" >> $GITHUB_OUTPUT
+          echo "sha256=$SHA256" >> $GITHUB_OUTPUT
+          echo "📦 Created: $ZIP_NAME"
+          echo "🔐 SHA256: $SHA256"
+      
+      - name: Create Release
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.parse.outputs.tag }}
+          name: "${{ steps.parse.outputs.pack_id }} v${{ steps.parse.outputs.version }}"
+          body: |
+            ## 📦 Pack: ${{ steps.parse.outputs.pack_id }}
+            **Version:** ${{ steps.parse.outputs.version }}
+            
+            ### Instalação
+            ```bash
+            simplifia install ${{ steps.parse.outputs.pack_id }}
+            ```
+            
+            ### SHA256
+            ```
+            ${{ steps.zip.outputs.sha256 }}
+            ```
+          files: ${{ steps.zip.outputs.zip_name }}
+          draft: false
+          prerelease: false
+      
+      - name: Update manifest
+        run: |
+          PACK_ID="${{ steps.parse.outputs.pack_id }}"
+          VERSION="${{ steps.parse.outputs.version }}"
+          SHA256="${{ steps.zip.outputs.sha256 }}"
+          ZIP_URL="https://github.com/${{ github.repository }}/releases/download/${{ steps.parse.outputs.tag }}/${{ steps.zip.outputs.zip_name }}"
+          
+          # Update manifest.json using jq
+          jq --arg id "$PACK_ID" \
+             --arg version "$VERSION" \
+             --arg url "$ZIP_URL" \
+             --arg sha "$SHA256" \
+             --arg date "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+             '
+             .generated_at = $date |
+             .packs = [.packs[] | if .id == $id then 
+               .latest_version = $version | 
+               .zip_url = $url | 
+               .sha256 = $sha 
+             else . end]
+             ' manifest.json > manifest.tmp.json
+          
+          mv manifest.tmp.json manifest.json
+          cat manifest.json
+      
+      - name: Commit manifest update
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add manifest.json
+          git commit -m "📦 Update manifest: ${{ steps.parse.outputs.pack_id }} v${{ steps.parse.outputs.version }}" || echo "No changes to commit"
+          git push origin HEAD:main

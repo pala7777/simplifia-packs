@@ -1,0 +1,39 @@
+{
+  "id": "whatsapp",
+  "name": "Pack WhatsApp Negócios",
+  "version": "1.0.0",
+  "requires": ["base>=1.0.0"],
+  "install": {
+    "copy_to": {
+      "workflows": "~/.openclawd/workflows/simplifia/whatsapp",
+      "rules": "~/.openclawd/rules/simplifia/whatsapp",
+      "assets": "~/.openclawd/assets/simplifia/whatsapp"
+    },
+    "db": {
+      "type": "sqlite",
+      "path": "~/.simplifia/state.db",
+      "migrations": ["migrations/sqlite_init.sql"]
+    }
+  },
+  "features": {
+    "logs": true,
+    "cockpit": false
+  },
+  "workflows": [
+    {
+      "id": "wf_001_inbox_triage",
+      "title": "Inbox Autopilot (Triagem + Draft)",
+      "entrypoints": ["message_in"]
+    },
+    {
+      "id": "wf_002_agendamento",
+      "title": "Agendamento One-Click",
+      "entrypoints": ["intent_schedule"]
+    },
+    {
+      "id": "wf_003_pos_venda",
+      "title": "Pós-venda + Reviews",
+      "entrypoints": ["order_done"]
+    }
+  ]
+}

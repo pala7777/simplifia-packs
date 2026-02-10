@@ -1,0 +1,88 @@
+# SIMPLIFIA - Sequências de Follow-up
+# Pack: WhatsApp Negócios
+# Formato: [template_key] | [texto]
+
+# === PÓS-VENDA ===
+
+pos_venda_d1 | Oi {{customer.name}}! 😊
+
+Passando pra saber se ficou tudo certo com {{service}}.
+
+Qualquer coisa que precisar ajustar, é só me avisar!
+
+pos_venda_d7 | Oi {{customer.name}}! Tudo bem?
+
+Já faz uma semana desde {{service}}. Espero que esteja aproveitando!
+
+Se puder, adoraria saber sua opinião. Pode deixar uma avaliação rápida aqui:
+{{review_link}}
+
+Sua opinião ajuda muito! 🙏
+
+pos_venda_d30 | Oi {{customer.name}}! 👋
+
+Faz um tempinho que não nos vemos!
+
+Temos algumas novidades que você pode gostar:
+• {{novidade_1}}
+• {{novidade_2}}
+
+Quer agendar? Tenho horários especiais pra clientes como você 😉
+
+# === LEMBRETE DE AGENDAMENTO ===
+
+lembrete_24h | Oi {{customer.name}}! 😊
+
+Só passando pra lembrar: amanhã você tem horário marcado às {{scheduled_time}}.
+
+Confirma pra mim? (Responde "OK" ou "Preciso remarcar")
+
+lembrete_2h | {{customer.name}}, daqui 2 horas é seu horário!
+
+Te espero às {{scheduled_time}}. Até já! 🙌
+
+# === RECUPERAÇÃO DE CLIENTE ===
+
+reengajamento_60d | Oi {{customer.name}}! 
+
+Faz um tempo que você não aparece por aqui. Tá tudo bem?
+
+Estamos com saudades! Se quiser agendar, tenho um horário especial esperando você.
+
+É só responder "quero" que eu te passo as opções 😊
+
+reengajamento_90d | {{customer.name}}, olha quem lembrou de você! 👋
+
+Já faz {{days_since_last}} dias desde a última vez que nos vimos.
+
+Que tal marcar um horário? Tenho uma surpresa pra clientes que voltam! 🎁
+
+# === CARRINHO ABANDONADO / ORÇAMENTO SEM RETORNO ===
+
+orcamento_sem_retorno_d1 | Oi {{customer.name}}!
+
+Vi que ontem você perguntou sobre {{service}}. 
+
+Ficou alguma dúvida? Posso ajudar com mais informações?
+
+orcamento_sem_retorno_d3 | {{customer.name}}, ainda está pensando em {{service}}?
+
+Se o valor foi o problema, me conta que a gente tenta achar uma solução 😊
+
+# === ANIVERSÁRIO ===
+
+aniversario | 🎂 Feliz aniversário, {{customer.name}}!
+
+Que seu dia seja incrível!
+
+E pra comemorar, preparei um presente especial pra você: {{presente}}
+
+Válido por 7 dias. Aproveita! 🎁
+
+# === INDICAÇÃO ===
+
+pos_indicacao | {{customer.name}}, muito obrigado pela indicação! 🙏
+
+O(a) {{indicado_nome}} já entrou em contato e como prometido, você ganhou {{recompensa}}.
+
+Pode usar na próxima visita!
