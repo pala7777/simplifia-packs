@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-02-10T00:00:00Z",
+  "generated_at": "2026-02-10T18:57:59Z",
   "packs": [
     {
       "id": "base",
@@ -13,8 +13,8 @@
       "id": "whatsapp",
       "name": "Pack WhatsApp Negócios",
       "latest_version": "1.0.0",
-      "zip_url": "",
-      "sha256": "",
+      "zip_url": "https://github.com/pala7777/simplifia-packs/releases/download/pack-whatsapp-v1.0.0/whatsapp-1.0.0.zip",
+      "sha256": "31927566760a174ace3085988ef205e830514511e321c83e87a744fd3257737d",
       "release_notes": "Primeira versão do Pack WhatsApp (3 workflows + rules + assets + sqlite)."
     },
     {
